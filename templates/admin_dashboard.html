@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Admin Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <h2 class="mb-4">Admin Dashboard</h2>
+
+    <div class="row">
+        <!-- Subjects Management -->
+        <div class="col-md-6">
+            <div class="card shadow rounded-4 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Subjects</h5>
+
+                    <!-- Add Subject Form -->
+                    <form method="POST" action="{{ url_for('add_subject') }}" class="row g-3 mb-3">
+                        <div class="col-md-5">
+                            <input type="text" name="sub_code" class="form-control" placeholder="Code (e.g., CS101)" required>
+                        </div>
+                        <div class="col-md-5">
+                            <input type="text" name="sub_name" class="form-control" placeholder="Subject Name" required>
+                        </div>
+                        <div class="col-md-2">
+                            <button type="submit" class="btn btn-success w-100">Add</button>
+                        </div>
+                    </form>
+
+                    <!-- Subject List -->
+                    {% if subjects %}
+                        <ul class="list-group">
+                            {% for subject in subjects %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    {{ subject.sub_code }} - {{ subject.sub_name }}
+                                    <a href="{{ url_for('delete_subject', id=subject.id) }}" class="btn btn-sm btn-outline-danger">Delete</a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No subjects added yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Declare Results -->
+        <div class="col-md-6">
+            <div class="card shadow rounded-4 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Declare Results</h5>
+
+                    {% if students %}
+                        <form method="POST" action="{{ url_for('declare_result') }}">
+                            <div class="mb-3">
+                                <label for="student_id" class="form-label">Select Student</label>
+                                <select name="student_id" id="student_id" class="form-select" required>
+                                    <option value="" disabled selected>-- Select Student --</option>
+                                    {% for student in students %}
+                                        <option value="{{ student.id }}">{{ student.name }} ({{ student.roll_no }})</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+
+                            {% if subjects %}
+                                <h6 class="mb-2">Enter Marks</h6>
+                                {% for subject in subjects %}
+                                    <div class="row mb-2 align-items-center">
+                                        <div class="col-4">
+                                            <label class="form-label">{{ subject.sub_name }}</label>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number" name="marks_{{ subject.id }}" class="form-control" placeholder="Marks" required>
+                                        </div>
+                                        <div class="col-4">
+                                            <input type="number" name="total_{{ subject.id }}" class="form-control" placeholder="Total" value="100" required>
+                                        </div>
+                                    </div>
+                                {% endfor %}
+                                <div class="d-grid">
+                                    <button type="submit" class="btn btn-primary mt-2">Declare Result</button>
+                                </div>
+                            {% else %}
+                                <p class="text-muted">Add subjects before declaring results.</p>
+                            {% endif %}
+                        </form>
+                    {% else %}
+                        <p class="text-muted">No students registered yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}

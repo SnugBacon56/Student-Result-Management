@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Student Dashboard{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+
+    <div class="row">
+        <!-- Profile Card -->
+        <div class="col-md-4">
+            <div class="card shadow rounded-4 mb-4">
+                <div class="card-body text-center">
+                    <img src="{{ url_for('static', filename='uploads/' ~ user.image) }}"
+                         class="rounded-circle img-thumbnail mb-3" width="150" height="150" alt="Profile Image">
+
+                    <h5 class="card-title">{{ user.name }}</h5>
+                    <p class="card-text">
+                        <strong>Roll No:</strong> {{ user.roll_no }}<br>
+                        <strong>Email:</strong> {{ user.email }}
+                    </p>
+                    <a href='/profile/update' class="btn btn-outline-primary btn-sm">Update Profile</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Subjects & Results -->
+        <div class="col-md-8">
+            <!-- Enrolled Subjects -->
+            <div class="card shadow rounded-4 mb-4">
+                <div class="card-body">
+                    <h5 class="card-title">Enrolled Subjects</h5>
+                    {% if subjects %}
+                        <ul class="list-group list-group-flush">
+                            {% for sub in subjects %}
+                                <li class="list-group-item">{{ sub.sub_code }} - {{ sub.sub_name }}</li>
+                            {% endfor %}
+                        </ul>
+                    {% else %}
+                        <p class="text-muted">No subjects available.</p>
+                    {% endif %}
+                </div>
+            </div>
+
+            <!-- Result History -->
+            <div class="card shadow rounded-4">
+                <div class="card-body">
+                    <h5 class="card-title">Result History</h5>
+                    {% if results %}
+                        {% for result in results %}
+                            <div class="border rounded p-3 mb-3">
+                                <strong>Declared on:</strong> {{ result.declaration_date }}<br>
+                                <ul class="mt-2">
+                                    {% for item in result.items %}
+                                        <li>{{ item.subject.sub_name }}: {{ item.marks_obtained }}/{{ item.total_marks }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
+                        {% endfor %}
+                    {% else %}
+                        <p class="text-muted">No results declared yet.</p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
